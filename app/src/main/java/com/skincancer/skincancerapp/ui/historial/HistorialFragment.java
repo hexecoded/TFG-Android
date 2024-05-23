@@ -1,4 +1,4 @@
-package com.skincancer.skincancerapp.ui.slideshow;
+package com.skincancer.skincancerapp.ui.historial;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,10 +8,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.skincancer.skincancerapp.R;
-import com.skincancer.skincancerapp.databinding.FragmentDiagnosticoBinding;
 import com.skincancer.skincancerapp.databinding.FragmentHistorialBinding;
 
 public class HistorialFragment extends Fragment {

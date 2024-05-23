@@ -7,4 +7,6 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="rojoTitulo">#9f192c</color>
+    <color name="azulAcento">#FF68CFFF</color>
 </resources>

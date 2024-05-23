@@ -1,4 +1,4 @@
-package com.skincancer.skincancerapp.ui.gallery;
+package com.skincancer.skincancerapp.ui.diagnostico;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
