@@ -21,8 +21,8 @@ public class InicioFragment extends Fragment {
         binding = FragmentInicioBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        mText = root.findViewById(R.id.text_home);
-        mText.setText("Inicio");
+        //mText = root.findViewById(R.id.text_home);
+        //mText.setText("Inicio");
 
         return root;
     }

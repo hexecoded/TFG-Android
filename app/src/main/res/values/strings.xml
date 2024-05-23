@@ -5,9 +5,15 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-        <string name="action_settings">Acerca de</string>
+    <string name="action_settings">Acerca de</string>
 
     <string name="menu_home">Inicio</string>
     <string name="menu_gallery">Diagnóstico</string>
     <string name="menu_slideshow">Historial</string>
+
+    <!-- Menu inicio -->
+    <string name="descAPP">Aquí podrá obtener un diagnóstico rápido sobre manchas de la piel</string>
+    <string name="descAPP2">Recuerde que esta aplicación ha sido realizada con fines informativos, por lo que debe visitar a un especialista tras su uso para confirmar su validez.</string>
+    <string name="prevencion">La protección frente al sol es un factor clave para la prevención de lesiones: \n\n - Evite las horas punta de luz solar \n - Use protector solar \n - Es recomendable el uso de gafas y sombrero</string>
+
 </resources>
