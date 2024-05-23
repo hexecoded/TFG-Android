@@ -6,17 +6,82 @@
     android:layout_height="match_parent"
     tools:context=".ui.diagnostico.DiagnosticoFragment">
 
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/camera"
+        android:layout_width="183dp"
+        android:layout_height="165dp"
+        android:layout_marginBottom="60dp"
+        android:padding="26dp"
+        android:text="Tomar fotografía"
+        app:cardElevation="20dp"
+        app:icon="@drawable/camera_retro"
+        app:iconGravity="top"
+        app:iconSize="58dp"
+        app:layout_constraintBottom_toTopOf="@+id/infoNitidez"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <TextView
-        android:id="@+id/text_gallery"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/textView2"
+        android:layout_width="315dp"
+        android:layout_height="81dp"
+        android:text="Puede realizar un diagnóstico tomando una fotografía, o abriendo una de la galería:"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/gallery"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/gallery"
+        android:layout_width="183dp"
+        android:layout_height="165dp"
+        android:layout_marginBottom="56dp"
+        android:padding="26dp"
+        android:text="Abrir galería"
+        app:cardElevation="20dp"
+        app:icon="@drawable/gallery_image"
+        app:iconGravity="top"
+        app:iconSize="58dp"
+        app:layout_constraintBottom_toTopOf="@+id/camera"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/infoNitidez"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:backgroundTint="#E2FFFFFF"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="9dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/nitida"
+                android:layout_width="312dp"
+                android:layout_height="wrap_content"
+                android:text="Nota: asegurése de que la imagen es nítida y cercana"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

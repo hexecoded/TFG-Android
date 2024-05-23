@@ -22,8 +22,8 @@ public class DiagnosticoFragment extends Fragment {
         binding = FragmentDiagnosticoBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        mText = root.findViewById(R.id.text_gallery);
-        mText.setText("Diagnostico");
+        //mText = root.findViewById(R.id.text_gallery);
+        //mText.setText("Diagnostico");
 
         return root;
     }
