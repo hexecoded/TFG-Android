@@ -4,17 +4,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.button.MaterialButton;
 import com.skincancer.skincancerapp.R;
 import com.skincancer.skincancerapp.databinding.FragmentDiagnosticoBinding;
 
 public class DiagnosticoFragment extends Fragment {
     private FragmentDiagnosticoBinding binding;
-    private TextView mText;
+    private MaterialButton fromGallery;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -22,7 +22,7 @@ public class DiagnosticoFragment extends Fragment {
         binding = FragmentDiagnosticoBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        //mText = root.findViewById(R.id.text_gallery);
+        fromGallery = root.findViewById(R.id.gallerybutton);
         //mText.setText("Diagnostico");
 
         return root;
