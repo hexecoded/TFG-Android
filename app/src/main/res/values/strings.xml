@@ -15,5 +15,8 @@
     <string name="descAPP">Aquí podrá obtener un diagnóstico rápido sobre manchas de la piel</string>
     <string name="descAPP2">Recuerde que esta aplicación ha sido realizada con fines informativos, por lo que debe visitar a un especialista tras su uso para confirmar su validez.</string>
     <string name="prevencion">La protección frente al sol es un factor clave para la prevención de lesiones: \n\n - Evite las horas punta de luz solar \n - Use protector solar \n - Es recomendable el uso de gafas y sombrero</string>
+    <string name="opengal">Abrir galería</string>
+    <string name="desc_abrir">Puede realizar un diagnóstico tomando una fotografía, o abriendo una de la galería:</string>
+    <string name="tip_img">Nota: asegurése de que la imagen es nítida y cercana</string>
 
 </resources>

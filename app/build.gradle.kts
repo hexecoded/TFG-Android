@@ -44,5 +44,6 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     // https://mvnrepository.com/artifact/org.pytorch/pytorch_android_torchvision_lite
-    implementation ("org.pytorch:pytorch_android_torchvision:2.1.0")
+    implementation("org.pytorch:pytorch_android_torchvision:2.1.0")
+    implementation("org.pytorch:pytorch_android:2.1.0")
 }
