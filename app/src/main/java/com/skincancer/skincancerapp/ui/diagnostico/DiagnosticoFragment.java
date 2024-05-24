@@ -1,5 +1,6 @@
 package com.skincancer.skincancerapp.ui.diagnostico;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,16 @@ public class DiagnosticoFragment extends Fragment {
         View root = binding.getRoot();
 
         fromGallery = root.findViewById(R.id.gallerybutton);
+        fromGallery.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Intent intent = new Intent(getActivity(), GalleryActivity.class);
+                getActivity().startActivity(intent);
+
+            }
+        });
         //mText.setText("Diagnostico");
 
         return root;
