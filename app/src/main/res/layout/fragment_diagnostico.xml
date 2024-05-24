@@ -44,6 +44,7 @@
         app:icon="@drawable/gallery_image"
         app:iconGravity="top"
         app:iconSize="58dp"
+        android:clickable="true"
         app:layout_constraintBottom_toTopOf="@+id/camera"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
