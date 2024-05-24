@@ -17,4 +17,85 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/foto"
+        android:layout_width="256dp"
+        android:layout_height="211dp"
+        android:elevation="2dp"
+        android:src="@android:drawable/gallery_thumb"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gallery_toolbar"
+        app:layout_constraintVertical_bias="0.328" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="372dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/dianostico"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10sp"
+            android:gravity="center"
+            android:text="Es una lesión benigna al 100% de confianza"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
+        android:layout_width="333dp"
+        android:layout_height="306dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="333dp"
+            android:layout_height="match_parent">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:layout_width="310dp"
+                android:layout_height="227dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tipologia" />
+
+            <TextView
+                android:id="@+id/tipologia"
+                android:layout_width="286dp"
+                android:layout_height="47dp"
+                android:text="Tipo de lesión indentificada, de mayor a menor probabilidad:"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
