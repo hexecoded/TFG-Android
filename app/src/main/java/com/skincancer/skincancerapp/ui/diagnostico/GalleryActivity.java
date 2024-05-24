@@ -174,11 +174,11 @@ public class GalleryActivity extends AppCompatActivity {
         // - Apply torchvision.transforms.ToTensor, scaleing values from 0 to 1 (dividing by 255).
         // - Apply transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
         // You don't need the resize because ResNet use AdaptiveAvgPool2d
-        bitmap = Bitmap.createScaledBitmap(bitmap, 640, 640, true);
-        Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(bitmap,
-                TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB,MemoryFormat.CHANNELS_LAST);
-        //final Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(bitmap,
+        bitmap = Bitmap.createScaledBitmap(bitmap, 512, 512, false);
+        //Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(bitmap,
         //        TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB, MemoryFormat.CHANNELS_LAST);
+        final Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(bitmap,
+                TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB, MemoryFormat.CHANNELS_LAST);
         //final Tensor inputTensor = bitmap.toTensor();
         if (verbose) System.out.println("Shape: " + Arrays.toString(inputTensor.shape()));
 
