@@ -252,7 +252,8 @@ public class DiagnosticoFragment extends Fragment {
             String filename = "img_" + sdf.format(date);
 
             values.put(MediaStore.Images.Media.TITLE, filename);
-            Uri uri = getActivity().getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+            Uri uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
             OutputStream outstream;
             try {
                 outstream = getActivity().getContentResolver().openOutputStream(uri);
@@ -263,6 +264,9 @@ public class DiagnosticoFragment extends Fragment {
             } catch (IOException e) {
 
             }
+            System.out.print("URI:");
+            System.out.println(uri.toString());
+
             cropImage(uri);
         }
     }
