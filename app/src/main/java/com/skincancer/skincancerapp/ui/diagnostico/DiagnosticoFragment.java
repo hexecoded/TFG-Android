@@ -3,6 +3,7 @@ package com.skincancer.skincancerapp.ui.diagnostico;
 import static android.app.Activity.RESULT_OK;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -23,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.canhub.cropper.CropImage;
 import com.canhub.cropper.CropImageContract;
 import com.canhub.cropper.CropImageContractOptions;
 import com.canhub.cropper.CropImageOptions;
@@ -39,6 +41,7 @@ import org.pytorch.torchvision.TensorImageUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,7 +61,6 @@ public class DiagnosticoFragment extends Fragment {
 
     final String[] GALLERY_PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int CAMERA_REQUEST = 1888;
-
     // Flag for enable/disable running validation when launching the app
     final boolean RUN_VALIDATION = false;
     // Validation percentage of image used (for >10 the process is very time consuming)
@@ -71,10 +73,10 @@ public class DiagnosticoFragment extends Fragment {
     final int REQUEST_ADD_FILE = 2;
 
     ActivityResultLauncher<CropImageContractOptions> cropImageAR = registerForActivityResult(new CropImageContract(), result -> {
+        System.out.println("dentro");
 
         if (result.isSuccessful()) {
             Bitmap bitmap = BitmapFactory.decodeFile(result.getUriFilePath(requireContext(), true));
-
             final float[] scores = predictBinary(bitmap, true);
             int maxScoreIdx = argMax(scores);
             System.out.println("maxScoreIdx: " + maxScoreIdx);
@@ -153,9 +155,6 @@ public class DiagnosticoFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-
-                //Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                //startActivityForResult(i, REQUEST_ADD_FILE);
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
@@ -232,11 +231,7 @@ public class DiagnosticoFragment extends Fragment {
             //imageView.setImageBitmap(bitmap);
 
             cropImage(selectedImage);
-            //cropImageAR.
 
-
-            // Code above was (almost) all copied (https://www.viralpatel.net/pick-image-from-galary-android-app/ thanks)
-            // This call the inference method and show the results on the text view
             final float[] scores = predictBinary(bitmap, true);
             int maxScoreIdx = argMax(scores);
             System.out.println("maxScoreIdx: " + maxScoreIdx);
@@ -245,62 +240,30 @@ public class DiagnosticoFragment extends Fragment {
             System.out.println("Predicted class: " + CLASSES[maxScoreIdx]);
 
             Log.d(String.valueOf(this.getClass()), String.format("Prediction: %s (%.2f %% beningno | %.2f %% maligno)", CLASSES[maxScoreIdx], scores[0] * 100, scores[1] * 100));
-
-            // Mostramos los resultados
-
-//            Intent intent = new Intent(getActivity(), GalleryActivity.class);
-//            intent.putExtra("scores", scores);
-//            intent.putExtra("maxScoreIdx", maxScoreIdx);
-//            intent.putExtra("picturePath", picturePath);
-//            intent.putExtra("fromcamera", false);
-//
-//            getActivity().startActivity(intent);
         }
 
 
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK && null != data) {
-            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-            final float[] scores = predictBinary(bitmap, true);
-            int maxScoreIdx = argMax(scores);
-            System.out.println("maxScoreIdx: " + maxScoreIdx);
-
-            String[] CLASSES = new String[]{"benigno", "maligno"};
-            System.out.println("Predicted class: " + CLASSES[maxScoreIdx]);
-
-            Log.d(String.valueOf(this.getClass()), String.format("Prediction: %s (%.2f %% beningno | %.2f %% maligno)", CLASSES[maxScoreIdx], scores[0] * 100, scores[1] * 100));
-
-            // Guardamos la imagen
+            Bitmap x = (Bitmap) data.getExtras().get("data");
+            ContentValues values = new ContentValues();
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
             Date date = new Date();
             String filename = "img_" + sdf.format(date);
+
+            values.put(MediaStore.Images.Media.TITLE, filename);
+            Uri uri = getActivity().getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
+            OutputStream outstream;
             try {
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes);
-                FileOutputStream fo = getContext().openFileOutput(filename, Context.MODE_PRIVATE);
-                fo.write(bytes.toByteArray());
-                // remember close file output
-                fo.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                filename = null;
+                outstream = getActivity().getContentResolver().openOutputStream(uri);
+                x.compress(Bitmap.CompressFormat.PNG, 100, outstream);
+                outstream.close();
+            } catch (FileNotFoundException e) {
+
+            } catch (IOException e) {
+
             }
-
-
-            Uri captured = Uri.fromFile(new File(filename));
-
-            cropImage(captured);
-
-            // Mostramos los resultados
-
-
-//            Intent intent = new Intent(getActivity(), GalleryActivity.class);
-//            intent.putExtra("scores", scores);
-//            intent.putExtra("maxScoreIdx", maxScoreIdx);
-//            intent.putExtra("picturePath", filename);
-//            intent.putExtra("fromcamera", true);
-//
-//            getActivity().startActivity(intent);
+            cropImage(uri);
         }
     }
 
