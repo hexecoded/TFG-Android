@@ -171,19 +171,19 @@ public class DiagnosticoFragment extends Fragment {
             final Tensor tensor = TensorImageUtils.bitmapToFloat32Tensor(assetImage, TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB, MemoryFormat.CHANNELS_LAST);
             //System.out.println("inputTensor[100,200,0] = " + tensor.getDataAsFloatArray()[0 + 100 * 3 + 200 * 3 * 720]);
             //System.out.println("inputTensor[44,123,2] = " + tensor.getDataAsFloatArray()[2 + 44 * 3 + 123 * 3 * 720]);
-            /*
+
             if (RUN_VALIDATION) {
-                String[] validation_fns = getAssets().list("validation/");
+                String[] validation_fns = getContext().getAssets().list("validation/");
                 System.out.println("Running validation set from: " + validation_fns.length);
-                int processedImages = 0, processedCatImages = 0, processedDogImages = 0, isCorrectPrediction=0;
-                for (int i = 0; i < validation_fns.length ; ++i)
-                    if (i%100 < RUN_VALIDATION_PCT) {
-                        String assetFn = "validation/"+validation_fns[i];
-                        InputStream istr = getAssets().open(assetFn);
+                int processedImages = 0, processedCatImages = 0, processedDogImages = 0, isCorrectPrediction = 0;
+                for (int i = 0; i < validation_fns.length; ++i)
+                    if (i % 100 < RUN_VALIDATION_PCT) {
+                       /* String assetFn = "validation/" + validation_fns[i];
+                        InputStream istr = getContext().getAssets().open(assetFn);
                         Bitmap bitmap = BitmapFactory.decodeStream(istr);
                         istr.close();
-                        if (bitmap!=null) {
-                            float[] scores = predictionCatOrDog(bitmap, false);
+                        if (bitmap != null) {
+                            float[] scores = predictBinary(bitmap, false);
                             int predictedClass = argMax(scores);
 
                             //if (i%100==0)
@@ -191,18 +191,18 @@ public class DiagnosticoFragment extends Fragment {
                             System.out.println(Character.isUpperCase(validation_fns[i].charAt(0)) ? "cat" : "dog");
                             int realClass = Character.isUpperCase(validation_fns[i].charAt(0)) ? 0 : 1;
                             System.out.println(predictedClass + " " + realClass);
-                            if ( ++processedImages % 100 == 0 ) System.out.println(processedImages);
-                            if (realClass==0) ++processedDogImages; else ++processedCatImages;
-                            isCorrectPrediction += (predictedClass==realClass) ? 1 : 0;
-                         }
-                }
+                            if (++processedImages % 100 == 0) System.out.println(processedImages);
+                            if (realClass == 0) ++processedDogImages;
+                            else ++processedCatImages;
+                            isCorrectPrediction += (predictedClass == realClass) ? 1 : 0;
+                        }*/
+                    }
 
-                System.out.println(String.format("Cats: %d (%.2f) Dogs: %d (%.2f) Acc: %.8f",processedCatImages,((float)processedCatImages)/processedImages,
-                        processedDogImages,((float)processedDogImages)/processedImages,((float)isCorrectPrediction)/processedImages));
-            //}*/
+                //System.out.println(String.format("Cats: %d (%.2f) Dogs: %d (%.2f) Acc: %.8f", processedCatImages, ((float) processedCatImages) / processedImages, processedDogImages, ((float) processedDogImages) / processedImages, ((float) isCorrectPrediction) / processedImages));
+            }
 
         } catch (IOException e) {
-            Log.e("FastAIDemo", "Error reading assets", e);
+            Log.e("SKINCancerAPP", "Error reading assets", e);
         }
 
 
