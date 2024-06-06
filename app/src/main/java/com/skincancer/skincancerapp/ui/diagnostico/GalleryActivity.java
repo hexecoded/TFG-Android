@@ -31,6 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.skincancer.skincancerapp.R;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,8 +66,16 @@ public class GalleryActivity extends AppCompatActivity {
         float[] scores = getIntent().getFloatArrayExtra("scores");
         int maxScoreIdx = getIntent().getIntExtra("maxScoreIdx", 0); // 0 = default value
         String picturePath = getIntent().getStringExtra("picturePath");
-
-        Bitmap image = BitmapFactory.decodeFile(picturePath);
+        boolean fromcamera = getIntent().getBooleanExtra("fromcamera", false);
+        Bitmap image;
+        if (fromcamera) {
+            try {
+                image = BitmapFactory.decodeStream(openFileInput(picturePath));
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        } else
+            image = BitmapFactory.decodeFile(picturePath);
 
         // Associate elements from layout with their respective handler class
         imageView = findViewById(R.id.foto);

@@ -31,21 +31,26 @@ import org.pytorch.Module;
 import org.pytorch.Tensor;
 import org.pytorch.torchvision.TensorImageUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 public class DiagnosticoFragment extends Fragment {
     private FragmentDiagnosticoBinding binding;
     private MaterialButton fromGallery;
+    private MaterialButton fromCamera;
 
     // Pytorch model
     Module module;
 
     final String[] GALLERY_PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private static final int CAMERA_REQUEST = 1888;
 
     // Flag for enable/disable running validation when launching the app
     final boolean RUN_VALIDATION = false;
@@ -64,16 +69,26 @@ public class DiagnosticoFragment extends Fragment {
         View root = binding.getRoot();
 
         fromGallery = root.findViewById(R.id.gallerybutton);
+        fromCamera = root.findViewById(R.id.camera);
 
         fromGallery.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-
                 Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i, REQUEST_ADD_FILE);
+            }
+        });
 
+        fromCamera.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+
+                //Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                //startActivityForResult(i, REQUEST_ADD_FILE);
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
         });
 
@@ -172,6 +187,49 @@ public class DiagnosticoFragment extends Fragment {
             intent.putExtra("scores", scores);
             intent.putExtra("maxScoreIdx", maxScoreIdx);
             intent.putExtra("picturePath", picturePath);
+            intent.putExtra("fromcamera", false);
+
+            getActivity().startActivity(intent);
+        }
+
+
+        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK && null != data) {
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            final float[] scores = predictBinary(bitmap, true);
+            int maxScoreIdx = argMax(scores);
+            System.out.println("maxScoreIdx: " + maxScoreIdx);
+
+            String[] CLASSES = new String[]{"benigno", "maligno"};
+            System.out.println("Predicted class: " + CLASSES[maxScoreIdx]);
+
+            Log.d(String.valueOf(this.getClass()), String.format("Prediction: %s (%.2f %% beningno | %.2f %% maligno)", CLASSES[maxScoreIdx], scores[0] * 100, scores[1] * 100));
+
+            // Guardamos la imagen
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
+            Date date = new Date();
+            String filename = "img_" + sdf.format(date);
+            try {
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+                FileOutputStream fo = getContext().openFileOutput(filename, Context.MODE_PRIVATE);
+                fo.write(bytes.toByteArray());
+                // remember close file output
+                fo.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+                filename = null;
+            }
+
+
+            // Mostramos los resultados
+
+
+            Intent intent = new Intent(getActivity(), GalleryActivity.class);
+            intent.putExtra("scores", scores);
+            intent.putExtra("maxScoreIdx", maxScoreIdx);
+            intent.putExtra("picturePath", filename);
+            intent.putExtra("fromcamera", true);
 
             getActivity().startActivity(intent);
         }
