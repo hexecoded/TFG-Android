@@ -5,6 +5,7 @@ import static android.app.Activity.RESULT_OK;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,10 +18,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.canhub.cropper.CropImageContract;
+import com.canhub.cropper.CropImageContractOptions;
+import com.canhub.cropper.CropImageOptions;
+import com.canhub.cropper.CropImageView;
 import com.google.android.material.button.MaterialButton;
 import com.skincancer.skincancerapp.R;
 import com.skincancer.skincancerapp.databinding.FragmentDiagnosticoBinding;
@@ -40,6 +46,7 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class DiagnosticoFragment extends Fragment {
     private FragmentDiagnosticoBinding binding;
@@ -62,6 +69,68 @@ public class DiagnosticoFragment extends Fragment {
     final int REQUEST_GALLERY_PERMISSIONS = 1;
     // Request for image on gallery selection (external content)
     final int REQUEST_ADD_FILE = 2;
+
+    ActivityResultLauncher<CropImageContractOptions> cropImageAR = registerForActivityResult(new CropImageContract(), result -> {
+
+        if (result.isSuccessful()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(result.getUriFilePath(requireContext(), true));
+
+            final float[] scores = predictBinary(bitmap, true);
+            int maxScoreIdx = argMax(scores);
+            System.out.println("maxScoreIdx: " + maxScoreIdx);
+
+            String[] CLASSES = new String[]{"benigno", "maligno"};
+            System.out.println("Predicted class: " + CLASSES[maxScoreIdx]);
+
+            Log.d(String.valueOf(this.getClass()), String.format("Prediction: %s (%.2f %% beningno | %.2f %% maligno)", CLASSES[maxScoreIdx], scores[0] * 100, scores[1] * 100));
+
+            // Guardamos la imagen
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
+            Date date = new Date();
+            String filename = "img_" + sdf.format(date);
+            try {
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+                FileOutputStream fo = getContext().openFileOutput(filename, Context.MODE_PRIVATE);
+                fo.write(bytes.toByteArray());
+                // remember close file output
+                fo.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+                filename = null;
+            }
+
+
+            // Mostramos los resultados
+
+
+            Intent intent = new Intent(getActivity(), GalleryActivity.class);
+            intent.putExtra("scores", scores);
+            intent.putExtra("maxScoreIdx", maxScoreIdx);
+            intent.putExtra("picturePath", filename);
+            intent.putExtra("fromcamera", true);
+
+            getActivity().startActivity(intent);
+        }
+    });
+
+    private void cropImage(Uri imageUri) {
+        CropImageOptions cropImageOptions = new CropImageOptions();
+        cropImageOptions.imageSourceIncludeGallery = true;
+        cropImageOptions.guidelines = CropImageView.Guidelines.ON;
+        cropImageOptions.imageSourceIncludeCamera = true;
+        cropImageOptions.fixAspectRatio = true;
+        CropImageContractOptions cropImageContractOptions = new CropImageContractOptions(imageUri, cropImageOptions);
+        cropImageAR.launch(cropImageContractOptions);
+    }
+
+
+    public boolean isAvailable(Context context, Intent intent) {
+        PackageManager packageManager = context.getPackageManager();
+        List list = packageManager.queryIntentActivities(intent, 0);
+        return list.size() > 0;
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -141,14 +210,6 @@ public class DiagnosticoFragment extends Fragment {
         return root;
     }
 
-
-    // This is the method executed when the button is pressed (read activity_main.xml FloatingActionButton entry)
-    // This way of choosing a file from gallery is deprecated. If you want to modify it PRs are welcome!
-    public void addFileOnClick(View unused) {
-        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(i, REQUEST_ADD_FILE);
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -170,6 +231,10 @@ public class DiagnosticoFragment extends Fragment {
             Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
             //imageView.setImageBitmap(bitmap);
 
+            cropImage(selectedImage);
+            //cropImageAR.
+
+
             // Code above was (almost) all copied (https://www.viralpatel.net/pick-image-from-galary-android-app/ thanks)
             // This call the inference method and show the results on the text view
             final float[] scores = predictBinary(bitmap, true);
@@ -183,13 +248,13 @@ public class DiagnosticoFragment extends Fragment {
 
             // Mostramos los resultados
 
-            Intent intent = new Intent(getActivity(), GalleryActivity.class);
-            intent.putExtra("scores", scores);
-            intent.putExtra("maxScoreIdx", maxScoreIdx);
-            intent.putExtra("picturePath", picturePath);
-            intent.putExtra("fromcamera", false);
-
-            getActivity().startActivity(intent);
+//            Intent intent = new Intent(getActivity(), GalleryActivity.class);
+//            intent.putExtra("scores", scores);
+//            intent.putExtra("maxScoreIdx", maxScoreIdx);
+//            intent.putExtra("picturePath", picturePath);
+//            intent.putExtra("fromcamera", false);
+//
+//            getActivity().startActivity(intent);
         }
 
 
@@ -222,16 +287,20 @@ public class DiagnosticoFragment extends Fragment {
             }
 
 
+            Uri captured = Uri.fromFile(new File(filename));
+
+            cropImage(captured);
+
             // Mostramos los resultados
 
 
-            Intent intent = new Intent(getActivity(), GalleryActivity.class);
-            intent.putExtra("scores", scores);
-            intent.putExtra("maxScoreIdx", maxScoreIdx);
-            intent.putExtra("picturePath", filename);
-            intent.putExtra("fromcamera", true);
-
-            getActivity().startActivity(intent);
+//            Intent intent = new Intent(getActivity(), GalleryActivity.class);
+//            intent.putExtra("scores", scores);
+//            intent.putExtra("maxScoreIdx", maxScoreIdx);
+//            intent.putExtra("picturePath", filename);
+//            intent.putExtra("fromcamera", true);
+//
+//            getActivity().startActivity(intent);
         }
     }
 
