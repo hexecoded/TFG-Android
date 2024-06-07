@@ -39,7 +39,8 @@
             android:name=".ui.diagnostico.GalleryActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.SkinCancerAPP.NoActionBar"></activity>
+            android:theme="@style/Theme.SkinCancerAPP.NoActionBar">
+        </activity>
 
     </application>
 

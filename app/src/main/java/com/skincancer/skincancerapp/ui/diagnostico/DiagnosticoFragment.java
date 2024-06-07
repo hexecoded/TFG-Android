@@ -6,7 +6,6 @@ import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,14 +16,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
-import com.canhub.cropper.CropImage;
 import com.canhub.cropper.CropImageContract;
 import com.canhub.cropper.CropImageContractOptions;
 import com.canhub.cropper.CropImageOptions;
@@ -47,11 +43,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 public class DiagnosticoFragment extends Fragment {
     private FragmentDiagnosticoBinding binding;
@@ -123,17 +117,6 @@ public class DiagnosticoFragment extends Fragment {
                 outstream = getActivity().getContentResolver().openOutputStream(uri);
                 x.compress(Bitmap.CompressFormat.PNG, 100, outstream);
                 outstream.close();
-
-                // Guardamos URI en fichero
-                //                FileOutputStream fos = new FileOutputStream(new File(getFilesDir(), "tours"));
-                //                FileOutputStream historial = new FileOutputStream(RESULTS_FILE, true);
-                //                OutputStreamWriter historialWriter = new OutputStreamWriter(historial);
-                //
-                //                historialWriter.append(uri.toString() + ";" + maxScoreIdx);
-                //
-                //                historialWriter.close();
-                //                historial.close();
-
 
                 File file = new File(getContext().getFilesDir(), RESULTS_FILE);
                 if (!file.exists())

@@ -3,7 +3,6 @@ package com.skincancer.skincancerapp.ui.historial;
 // Fuente parcial: https://www.tutorialspoint.com/how-to-display-a-list-of-images-and-text-in-a-listview-in-android
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +16,11 @@ import com.skincancer.skincancerapp.databinding.FragmentHistorialBinding;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class HistorialFragment extends Fragment {
 
@@ -39,18 +36,7 @@ public class HistorialFragment extends Fragment {
         View root = binding.getRoot();
         ArrayList<String> infoDiagnostics = new ArrayList<>();
 
-//
-//        StringBuilder content = new StringBuilder();
-//        try {
-//            BufferedReader br = new BufferedReader(new FileReader(RESULTS_FILE));
-//            String line;
-//            while ((line = br.readLine()) != null) {
-//                infoDiagnostics.add(line);
-//            }
-//            br.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        // Lectura del fichero
 
         File file = new File(getContext().getFilesDir(), RESULTS_FILE);
 
@@ -75,57 +61,24 @@ public class HistorialFragment extends Fragment {
             System.out.println("No hay fichero");
         }
 
-
-        //FileInputStream is;
-        //BufferedReader reader;
-
-//        if (file.exists()) {
-//            try {
-//                is = new FileInputStream(file);
-//            } catch (FileNotFoundException e) {
-//                throw new RuntimeException(e);
-//            }
-//            reader = new BufferedReader(new InputStreamReader(is));
-//            String line = null;
-//            try {
-//                line = reader.readLine();
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//            while (line != null) {
-//
-//                try {
-//                    line = reader.readLine();
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//                infoDiagnostics.add(line);
-//
-//            }
-//        }
-
+        // Tomamos los datos de cada diagnóstico
         final ListView list = root.findViewById(R.id.list);
         ArrayList<DiagnosticData> arrayList = new ArrayList<DiagnosticData>();
 
+        // Separación de la información
         for (int i = 0; i < infoDiagnostics.size(); i++) {
-            ArrayList<String> params = new ArrayList<>();
             String[] fields = infoDiagnostics.get(i).split(":::");
-            for (String a : fields) {
-                params.add(a);
-                System.out.println(a);
+            ArrayList<String> params = new ArrayList<>(Arrays.asList(fields));
 
-            }
-            System.out.println("se acabo");
-
-
-            arrayList.add(new DiagnosticData(CLASSES[Integer.parseInt(params.get(1))], "Queratosis seborreica", "https://cdn3.iconfinder.com/data/icons/design-n-code/100/272127c4-8d19-4bd3-bd22-2b75ce94ccb4-512.png"));
+            arrayList.add(new DiagnosticData(CLASSES[Integer.parseInt(params.get(1))], "Queratosis seborreica", params.get(0)));
         }
 
         CustomAdapter customAdapter = new CustomAdapter(getContext(), arrayList);
-        if (arrayList.isEmpty()) {
+
+        // Si no hubo datos, se crea un placeholder de vacío
+        if (arrayList.isEmpty())
             arrayList.add(new DiagnosticData("", "Vacío", "https://cdn3.iconfinder.com/data/icons/design-n-code/100/272127c4-8d19-4bd3-bd22-2b75ce94ccb4-512.png"));
 
-        }
         list.setAdapter(customAdapter);
 
         return root;
