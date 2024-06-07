@@ -43,9 +43,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -55,6 +57,8 @@ public class DiagnosticoFragment extends Fragment {
     private FragmentDiagnosticoBinding binding;
     private MaterialButton fromGallery;
     private MaterialButton fromCamera;
+
+    private static String RESULTS_FILE = "historial.txt";
 
     // Pytorch model
     Module module;
@@ -103,6 +107,51 @@ public class DiagnosticoFragment extends Fragment {
                 filename = null;
             }
 
+            // La guardamos haciendo referencia
+
+
+            Bitmap x = bitmap;
+            ContentValues values = new ContentValues();
+
+            filename = "img_" + sdf.format(date);
+
+            values.put(MediaStore.Images.Media.TITLE, filename);
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+            Uri uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            OutputStream outstream;
+            try {
+                outstream = getActivity().getContentResolver().openOutputStream(uri);
+                x.compress(Bitmap.CompressFormat.PNG, 100, outstream);
+                outstream.close();
+
+                // Guardamos URI en fichero
+                //                FileOutputStream fos = new FileOutputStream(new File(getFilesDir(), "tours"));
+                //                FileOutputStream historial = new FileOutputStream(RESULTS_FILE, true);
+                //                OutputStreamWriter historialWriter = new OutputStreamWriter(historial);
+                //
+                //                historialWriter.append(uri.toString() + ";" + maxScoreIdx);
+                //
+                //                historialWriter.close();
+                //                historial.close();
+
+
+                File file = new File(getContext().getFilesDir(), RESULTS_FILE);
+                if (!file.exists())
+                    file.mkdir();
+
+                File gpxfile = new File(file, "historial_paciente");
+                FileWriter writer = new FileWriter(gpxfile, true);
+                writer.append(String.format("%s:::%s\n", uri, maxScoreIdx));
+                writer.flush();
+                writer.close();
+
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
 
             // Mostramos los resultados
 
@@ -114,6 +163,7 @@ public class DiagnosticoFragment extends Fragment {
             intent.putExtra("fromcamera", true);
 
             getActivity().startActivity(intent);
+
         }
     });
 
@@ -127,14 +177,8 @@ public class DiagnosticoFragment extends Fragment {
         cropImageAR.launch(cropImageContractOptions);
     }
 
-
-    public boolean isAvailable(Context context, Intent intent) {
-        PackageManager packageManager = context.getPackageManager();
-        List list = packageManager.queryIntentActivities(intent, 0);
-        return list.size() > 0;
-    }
-
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle
+            savedInstanceState) {
 
         binding = FragmentDiagnosticoBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
