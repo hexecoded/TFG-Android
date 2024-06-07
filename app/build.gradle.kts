@@ -51,5 +51,6 @@ dependencies {
     implementation("org.pytorch:pytorch_android_torchvision:2.1.0")
     implementation("org.pytorch:pytorch_android:2.1.0")
     implementation("com.vanniktech:android-image-cropper:4.5.0")
+    implementation(libs.picasso)
 
 }
