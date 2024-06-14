@@ -34,7 +34,7 @@ class CustomAdapter implements ListAdapter {
     }
 
     @Override
-    public void registerDataSetObserver(DataSetObserver observer) {
+        public void registerDataSetObserver(DataSetObserver observer) {
     }
 
     @Override
