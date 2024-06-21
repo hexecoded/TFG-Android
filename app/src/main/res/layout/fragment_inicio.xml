@@ -59,7 +59,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintVertical_bias="0.125" />
 
             <TextView
                 android:id="@+id/descripcionMain2"
@@ -70,7 +70,7 @@
                 android:gravity="center"
                 android:text="@string/descAPP"
                 android:textColor="@color/black"
-                android:textSize="17sp"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@+id/descripcionMain"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.721"
@@ -84,7 +84,7 @@
                 android:gravity="center"
                 android:text="@string/descAPP2"
                 android:textColor="@color/black"
-                android:textSize="17sp"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:layout_editor_absoluteX="27dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
