@@ -169,27 +169,19 @@ public class DiagnosticoFragment extends Fragment {
         fromGallery = root.findViewById(R.id.gallerybutton);
         fromCamera = root.findViewById(R.id.camera);
 
-        fromGallery.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, REQUEST_ADD_FILE);
-            }
+        fromGallery.setOnClickListener(v -> {
+            Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(i, REQUEST_ADD_FILE);
         });
 
-        fromCamera.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
-            }
+        fromCamera.setOnClickListener(v -> {
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(cameraIntent, CAMERA_REQUEST);
         });
 
-        //mText.setText("Diagnostico");
 
-        // Here we load the assets: the only one is the pytorch model.
+        // Cargamos el modelo de pytorch
+        //todo Añadir modelo para multiclase
         try {
             module = Module.load(assetFilePath(getContext(), "skin-rn50android512.ptl"));
 
