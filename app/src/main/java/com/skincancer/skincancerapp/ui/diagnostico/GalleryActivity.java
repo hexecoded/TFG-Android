@@ -1,49 +1,25 @@
 package com.skincancer.skincancerapp.ui.diagnostico;
 
-import static com.skincancer.skincancerapp.ui.diagnostico.DiagnosticoFragment.assetFilePath;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
+import androidx.viewpager2.widget.ViewPager2;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.pytorch.IValue;
-import org.pytorch.Module;
-import org.pytorch.Tensor;
-import org.pytorch.torchvision.TensorImageUtils;
-import org.pytorch.MemoryFormat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.skincancer.skincancerapp.R;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
+
 
 public class GalleryActivity extends AppCompatActivity {
-    private static final String[] CLASSESBENIGN = new String[]{"Acrocordón", "Queratosis actínica", "Proliferación melatocínica atípica", "Angioma", "AIMP", "Dermatofibroma", "Lentigo", "Lentigo", "Querastosis liquenoide", "Cicatriz", "Lunar común", "Queratosis benigna", "Neurofibroma", "Queratosis seborreica", "Lentigo solar", "Lesión vascular", "Verruga"};
-    private static final String[] CLASSESMALIGNANT = new String[]{"Carcinoma de célula basal", "Melanoma", "Carcinoma escamoso"};
+    private ViewPager2 viewPager2;
 
-    // Button that allow to change image using gallery images
-    FloatingActionButton galleryButton;
 
     // View for loading the image
     ImageView imageView;
@@ -56,6 +32,7 @@ public class GalleryActivity extends AppCompatActivity {
         // This already was here with the empty activity:
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
+        viewPager2 = findViewById(R.id.pager);
 
         // Set toolbar
 
@@ -69,6 +46,12 @@ public class GalleryActivity extends AppCompatActivity {
         int maxScoreIdx = getIntent().getIntExtra("maxScoreIdx", 0); // 0 = default value
         String picturePath = getIntent().getStringExtra("picturePath");
         boolean fromcamera = getIntent().getBooleanExtra("fromcamera", false);
+        boolean ismalignant = getIntent().getBooleanExtra("ismalignant", false);
+        float[] scoresSubtype = getIntent().getFloatArrayExtra("scoresSubtype");
+
+
+        viewPager2.setAdapter(new PrognosisAdapter(getSupportFragmentManager(), getLifecycle(), ismalignant, scoresSubtype));
+
         Bitmap image;
         if (fromcamera) {
             try {
@@ -95,7 +78,7 @@ public class GalleryActivity extends AppCompatActivity {
     }
 
     @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;

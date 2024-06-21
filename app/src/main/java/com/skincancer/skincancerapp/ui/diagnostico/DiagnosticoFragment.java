@@ -58,6 +58,7 @@ public class DiagnosticoFragment extends Fragment {
     private static final String[] CLASSESMALIGNANT = new String[]{"Carcinoma de célula basal", "Melanoma", "Carcinoma de célula escamosa"};
 
     private static String RESULTS_FILE = "historial.txt";
+    private static int IMGSIZE = 512;
 
     // Pytorch model
     Module module;
@@ -82,8 +83,8 @@ public class DiagnosticoFragment extends Fragment {
         if (result.isSuccessful()) {
             Bitmap bitmap = BitmapFactory.decodeFile(result.getUriFilePath(requireContext(), true));
             final float[] scores = predict(bitmap, true, module);
-            final float[] scoresBenign;
-            final float[] scoresMalignant;
+            float[] scoresBenign = null;
+            float[] scoresMalignant = null;
             int maxScoreIdx = argMax(scores);
             System.out.println("maxScoreIdx: " + maxScoreIdx);
             System.out.println("Predicted class: " + CLASSES[maxScoreIdx]);
@@ -149,11 +150,10 @@ public class DiagnosticoFragment extends Fragment {
 
                 File gpxfile = new File(file, "historial_paciente");
                 FileWriter writer = new FileWriter(gpxfile, true);
-                if (ismalignant){
-                    writer.append(String.format("%s:::%s:::%s\n", uri, maxScoreIdx,CLASSESMALIGNANT[maxIdx]));
-                }
-                else{
-                    writer.append(String.format("%s:::%s:::%s\n", uri, maxScoreIdx,CLASSESBENIGN[maxIdx]));
+                if (ismalignant) {
+                    writer.append(String.format("%s:::%s:::%s\n", uri, maxScoreIdx, CLASSESMALIGNANT[maxIdx]));
+                } else {
+                    writer.append(String.format("%s:::%s:::%s\n", uri, maxScoreIdx, CLASSESBENIGN[maxIdx]));
                 }
                 writer.flush();
                 writer.close();
@@ -176,6 +176,8 @@ public class DiagnosticoFragment extends Fragment {
             intent.putExtra("fromcamera", true);
             intent.putExtra("ismalignant", ismalignant);
             intent.putExtra("maxIDX", maxIdx);
+            if (ismalignant) intent.putExtra("scoresSubtype", scoresMalignant);
+            else intent.putExtra("scoresSubtype", scoresBenign);
 
 
             getActivity().startActivity(intent);
@@ -331,10 +333,10 @@ public class DiagnosticoFragment extends Fragment {
         // - Apply torchvision.transforms.ToTensor, scaleing values from 0 to 1 (dividing by 255).
         // - Apply transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
         // You don't need the resize because ResNet use AdaptiveAvgPool2d
-        bitmap = Bitmap.createScaledBitmap(bitmap, 512, 512, false);
+        bitmap = Bitmap.createScaledBitmap(bitmap, IMGSIZE, IMGSIZE, false);
         //Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(bitmap,
         //        TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB, MemoryFormat.CHANNELS_LAST);
-        final Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(bitmap, TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB);
+        final Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(bitmap, TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB, MemoryFormat.CHANNELS_LAST);
         //final Tensor inputTensor = bitmap.toTensor();
         if (verbose) System.out.println("Shape: " + Arrays.toString(inputTensor.shape()));
 
