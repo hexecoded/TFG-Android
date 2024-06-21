@@ -39,6 +39,8 @@ import java.io.OutputStream;
 import java.util.Arrays;
 
 public class GalleryActivity extends AppCompatActivity {
+    private static final String[] CLASSESBENIGN = new String[]{"acrochordon", "actinic_keratosis", "atypical_melanocytic_proliferation", "angioma", "aimp", "dermatofibroma", "lentigo_nos", "lentigo_simplex", "lichenoid_keratosis", "scar", "nevus", "pigmented_benign_keratosis", "neurofibroma", "seborreic_keratosis", "solar_lentigo", "vascular_lesion", "wart"};
+    private static final String[] CLASSESMALIGNANT = new String[]{"basal_cell_carcinoma", "melanoma", "squamous_cell_carcinoma"};
 
     // Button that allow to change image using gallery images
     FloatingActionButton galleryButton;
