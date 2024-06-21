@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,6 +44,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -51,6 +53,8 @@ public class DiagnosticoFragment extends Fragment {
     private FragmentDiagnosticoBinding binding;
     private MaterialButton fromGallery;
     private MaterialButton fromCamera;
+
+    private static final String[] CLASSES = new String[]{"Benigno", "Maligno"};
 
     private static String RESULTS_FILE = "historial.txt";
 
@@ -183,7 +187,7 @@ public class DiagnosticoFragment extends Fragment {
         // Cargamos el modelo de pytorch
         //todo Añadir modelo para multiclase
         try {
-            module = Module.load(assetFilePath(getContext(), "skin-rn50android512.ptl"));
+            module = Module.load(assetFilePath(getContext(), "bestISICFocal512_32_50_android.ptl"));
 
             // Code below is for checking that load + tensor convert to float + normalization is the same here and in Android
             Bitmap assetImage = BitmapFactory.decodeFile(assetFilePath(getContext(), "ASAN_0.png"));
@@ -195,9 +199,20 @@ public class DiagnosticoFragment extends Fragment {
                 String[] validation_fns = getContext().getAssets().list("validation/");
                 System.out.println("Running validation set from: " + validation_fns.length);
                 int processedImages = 0, processedCatImages = 0, processedDogImages = 0, isCorrectPrediction = 0;
-                for (int i = 0; i < validation_fns.length; ++i)
-                    if (i % 100 < RUN_VALIDATION_PCT) {
-                       /* String assetFn = "validation/" + validation_fns[i];
+                long startTime = System.currentTimeMillis();
+
+                try {
+
+                    File file = new File(getContext().getFilesDir(), "validacion.txt");
+                    if (!file.exists())
+                        file.mkdir();
+
+                    File gpxfile = new File(file, "resultadosvalid");
+                    FileWriter writer = new FileWriter(gpxfile, true);
+
+
+                    for (int i = 0; i < 200; ++i) {
+                        String assetFn = "validation/" + validation_fns[i];
                         InputStream istr = getContext().getAssets().open(assetFn);
                         Bitmap bitmap = BitmapFactory.decodeStream(istr);
                         istr.close();
@@ -205,21 +220,36 @@ public class DiagnosticoFragment extends Fragment {
                             float[] scores = predictBinary(bitmap, false);
                             int predictedClass = argMax(scores);
 
-                            //if (i%100==0)
-                            System.out.println(validation_fns[i]);
-                            System.out.println(Character.isUpperCase(validation_fns[i].charAt(0)) ? "cat" : "dog");
-                            int realClass = Character.isUpperCase(validation_fns[i].charAt(0)) ? 0 : 1;
-                            System.out.println(predictedClass + " " + realClass);
-                            if (++processedImages % 100 == 0) System.out.println(processedImages);
-                            if (realClass == 0) ++processedDogImages;
-                            else ++processedCatImages;
-                            isCorrectPrediction += (predictedClass == realClass) ? 1 : 0;
-                        }*/
+
+                            //System.out.println(validation_fns[i] + ", " + CLASSES[predictedClass]);
+                            //System.out.println(CLASSES[predictedClass]);
+                            writer.append(validation_fns[i] + ", " + predictedClass + "\n");
+
+
+                            //int realClass = Character.isUpperCase(validation_fns[i].charAt(0)) ? 0 : 1;
+                            //System.out.println(predictedClass + " " + realClass);
+                            //if (++processedImages % 100 == 0) System.out.println(processedImages);
+                            //if (realClass == 0) ++processedDogImages;
+                            //else ++processedCatImages;
+                            //isCorrectPrediction += (predictedClass == realClass) ? 1 : 0;
+                        }
+
                     }
 
-                //System.out.println(String.format("Cats: %d (%.2f) Dogs: %d (%.2f) Acc: %.8f", processedCatImages, ((float) processedCatImages) / processedImages, processedDogImages, ((float) processedDogImages) / processedImages, ((float) isCorrectPrediction) / processedImages));
-            }
+                    writer.flush();
+                    writer.close();
 
+
+                    long difference = System.currentTimeMillis() - startTime;
+                    System.out.print("Tiempo de inferencia: ");
+                    System.out.print(difference);
+                    System.out.println("ms");
+
+                } catch (IOException e) {
+                    Log.e("Exception", "File write failed: " + e.toString());
+                }
+
+            }
         } catch (IOException e) {
             Log.e("SKINCancerAPP", "Error reading assets", e);
         }
