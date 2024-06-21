@@ -39,8 +39,8 @@ import java.io.OutputStream;
 import java.util.Arrays;
 
 public class GalleryActivity extends AppCompatActivity {
-    private static final String[] CLASSESBENIGN = new String[]{"acrochordon", "actinic_keratosis", "atypical_melanocytic_proliferation", "angioma", "aimp", "dermatofibroma", "lentigo_nos", "lentigo_simplex", "lichenoid_keratosis", "scar", "nevus", "pigmented_benign_keratosis", "neurofibroma", "seborreic_keratosis", "solar_lentigo", "vascular_lesion", "wart"};
-    private static final String[] CLASSESMALIGNANT = new String[]{"basal_cell_carcinoma", "melanoma", "squamous_cell_carcinoma"};
+    private static final String[] CLASSESBENIGN = new String[]{"Acrocordón", "Queratosis actínica", "Proliferación melatocínica atípica", "Angioma", "AIMP", "Dermatofibroma", "Lentigo", "Lentigo", "Querastosis liquenoide", "Cicatriz", "Lunar común", "Queratosis benigna", "Neurofibroma", "Queratosis seborreica", "Lentigo solar", "Lesión vascular", "Verruga"};
+    private static final String[] CLASSESMALIGNANT = new String[]{"Carcinoma de célula basal", "Melanoma", "Carcinoma escamoso"};
 
     // Button that allow to change image using gallery images
     FloatingActionButton galleryButton;
@@ -85,9 +85,9 @@ public class GalleryActivity extends AppCompatActivity {
         String res;
         // Show initial text with instructions
         if (maxScoreIdx == 0)
-            textView.setText(String.format("Es una lesión benigna al %.2f %% de confianza", scores[0] * 100));
+            textView.setText(String.format("Es una lesión benigna (%.2f %%)", scores[0] * 100));
         else
-            textView.setText(String.format("Es una lesión maligna al %.2f %% de confianza", scores[1] * 100));
+            textView.setText(String.format("Es una lesión maligna (%.2f %%)", scores[1] * 100));
 
         // Colocamos imagen
         imageView.setImageBitmap(image);

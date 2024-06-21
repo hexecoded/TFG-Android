@@ -70,7 +70,7 @@ public class HistorialFragment extends Fragment {
             String[] fields = infoDiagnostics.get(i).split(":::");
             ArrayList<String> params = new ArrayList<>(Arrays.asList(fields));
 
-            arrayList.add(new DiagnosticData(CLASSES[Integer.parseInt(params.get(1))], "Queratosis seborreica", params.get(0)));
+            arrayList.add(new DiagnosticData(CLASSES[Integer.parseInt(params.get(1))], params.get(2), params.get(0)));
         }
 
         CustomAdapter customAdapter = new CustomAdapter(getContext(), arrayList);

@@ -54,8 +54,8 @@ public class DiagnosticoFragment extends Fragment {
     private MaterialButton fromCamera;
 
     private static final String[] CLASSES = new String[]{"Benigno", "Maligno"};
-    private static final String[] CLASSESBENIGN = new String[]{"acrochordon", "actinic_keratosis", "atypical_melanocytic_proliferation", "angioma", "aimp", "dermatofibroma", "lentigo_nos", "lentigo_simplex", "lichenoid_keratosis", "scar", "nevus", "pigmented_benign_keratosis", "neurofibroma", "seborreic_keratosis", "solar_lentigo", "vascular_lesion", "wart"};
-    private static final String[] CLASSESMALIGNANT = new String[]{"basal_cell_carcinoma", "melanoma", "squamous_cell_carcinoma"};
+    private static final String[] CLASSESBENIGN = new String[]{"Acrocordón", "Queratosis actínica", "Proliferación melatocínica atípica", "Angioma", "AIMP", "Dermatofibroma", "Lentigo", "Lentigo", "Querastosis liquenoide", "Cicatriz", "Lunar común", "Queratosis benigna", "Neurofibroma", "Queratosis seborreica", "Lentigo solar", "Lesión vascular", "Verruga"};
+    private static final String[] CLASSESMALIGNANT = new String[]{"Carcinoma de célula basal", "Melanoma", "Carcinoma de célula escamosa"};
 
     private static String RESULTS_FILE = "historial.txt";
 
@@ -78,7 +78,6 @@ public class DiagnosticoFragment extends Fragment {
     final int REQUEST_ADD_FILE = 2;
 
     ActivityResultLauncher<CropImageContractOptions> cropImageAR = registerForActivityResult(new CropImageContract(), result -> {
-        System.out.println("dentro");
 
         if (result.isSuccessful()) {
             Bitmap bitmap = BitmapFactory.decodeFile(result.getUriFilePath(requireContext(), true));
@@ -88,6 +87,26 @@ public class DiagnosticoFragment extends Fragment {
             int maxScoreIdx = argMax(scores);
             System.out.println("maxScoreIdx: " + maxScoreIdx);
             System.out.println("Predicted class: " + CLASSES[maxScoreIdx]);
+
+            // predecimos subtipo
+
+            Toast.makeText(getContext(), "Cargando...", Toast.LENGTH_LONG).show();
+
+            boolean ismalignant = false;
+            int maxIdx = 0;
+            if (maxScoreIdx == 0) {
+                scoresBenign = predict(bitmap, true, moduleBenign);
+                maxIdx = argMax(scoresBenign);
+                System.out.println("maxScoreIdx: " + maxIdx);
+                System.out.println("Predicted class: " + CLASSESBENIGN[maxIdx]);
+
+            } else {
+                scoresMalignant = predict(bitmap, true, moduleMalignant);
+                maxIdx = argMax(scoresMalignant);
+                System.out.println("maxScoreIdx: " + maxIdx);
+                System.out.println("Predicted class: " + CLASSESMALIGNANT[maxIdx]);
+                ismalignant = true;
+            }
 
             //Log.d(String.valueOf(this.getClass()), String.format("Prediction: %s (%.2f %% beningno | %.2f %% maligno)", CLASSES[maxScoreIdx], scores[0] * 100, scores[1] * 100));
 
@@ -130,7 +149,12 @@ public class DiagnosticoFragment extends Fragment {
 
                 File gpxfile = new File(file, "historial_paciente");
                 FileWriter writer = new FileWriter(gpxfile, true);
-                writer.append(String.format("%s:::%s\n", uri, maxScoreIdx));
+                if (ismalignant){
+                    writer.append(String.format("%s:::%s:::%s\n", uri, maxScoreIdx,CLASSESMALIGNANT[maxIdx]));
+                }
+                else{
+                    writer.append(String.format("%s:::%s:::%s\n", uri, maxScoreIdx,CLASSESBENIGN[maxIdx]));
+                }
                 writer.flush();
                 writer.close();
 
@@ -146,31 +170,13 @@ public class DiagnosticoFragment extends Fragment {
 
             Intent intent = new Intent(getActivity(), GalleryActivity.class);
 
-            // predecimos subtipo
-
-            Toast.makeText(getContext(), "Cargando...", Toast.LENGTH_SHORT).show();
-
-
-            if (maxScoreIdx == 0) {
-                scoresBenign = predict(bitmap, true, moduleBenign);
-                int maxIdx = argMax(scoresBenign);
-                System.out.println("maxScoreIdx: " + maxIdx);
-                System.out.println("Predicted class: " + CLASSESBENIGN[maxIdx]);
-                intent.putExtra("ismalignant", false);
-                intent.putExtra("maxIDX", maxIdx);
-
-            } else {
-                scoresMalignant = predict(bitmap, true, moduleMalignant);
-                int maxIdx = argMax(scoresMalignant);
-                System.out.println("maxScoreIdx: " + maxIdx);
-                System.out.println("Predicted class: " + CLASSESMALIGNANT[maxIdx]);
-                intent.putExtra("ismalignant", true);
-                intent.putExtra("maxIDX", maxIdx);
-            }
             intent.putExtra("scores", scores);
             intent.putExtra("maxScoreIdx", maxScoreIdx);
             intent.putExtra("picturePath", filename);
             intent.putExtra("fromcamera", true);
+            intent.putExtra("ismalignant", ismalignant);
+            intent.putExtra("maxIDX", maxIdx);
+
 
             getActivity().startActivity(intent);
 
