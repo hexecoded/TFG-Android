@@ -17,7 +17,7 @@
     <string name="prevencion">La protección frente al sol es un factor clave para la prevención de lesiones: \n\n - Evite las horas punta de luz solar \n - Use protector solar \n - Es recomendable el uso de gafas y sombrero</string>
     <string name="opengal">Abrir galería</string>
     <string name="desc_abrir">Puede realizar un diagnóstico tomando una fotografía, o abriendo una de la galería:\n\n\t\t-Revise que la calidad es aceptable\n\n\t\t-Compruebe que la macha queda \n\t\t centrada\n\n\t\t-Puede recortar la imagen para \n\t\tcentrar el área de interés.</string>
-    <string name="tip_img">Nota: el diagnóstico es meramente orientativo, y se recomienda visitar a un dermatólogo,</string>
+    <string name="tip_img">Nota: el diagnóstico es meramente orientativo, y se recomienda visitar a un dermatólogo.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
