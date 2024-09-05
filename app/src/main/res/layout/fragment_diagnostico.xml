@@ -10,13 +10,15 @@
     <TextView
         android:id="@+id/textView2"
         android:layout_width="307dp"
-        android:layout_height="250dp"
-        android:layout_marginTop="56dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:text="@string/desc_abrir"
-        android:textSize="18sp"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toTopOf="@+id/infoNitidez"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.138" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/gallerybutton"
@@ -53,7 +55,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="60dp"
-        android:backgroundTint="#E2FFFFFF"
         app:cardCornerRadius="30dp"
         app:cardElevation="9dp"
         app:layout_constraintBottom_toBottomOf="parent"
